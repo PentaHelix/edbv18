@@ -1,24 +1,27 @@
 %Author: Michael Raimer - 11701255
-function MainPrototype(handles, img)
+function [raster, img, imgs, region] = PrototypeMain(handles, img, debug)
     % IMPLEMENT Zwischenschritte im GUI
+    
     img = im2double(img);
     img = rgb2gray(img);
     img = imbinarize(img,0.55);  % IMPLEMENT Gerhard
+    
     s = size(img);
     if s(1) < s(2)
        img = rot90(img, 1);  % IMPLEMENT Gerhard
     end
-    imshow(img,'Parent',handles.axes1);
     
+    imshow(img,'Parent',handles.axes1);
     [imgs, region] = PrototypeCrop(img);
     types = PrototypeCellCheck(imgs);
     
     raster = [types{:}];
     raster = reshape(raster, [6, 4]);
-    [resultImg, result] = PrototypeGeneratePath(raster, img, imgs, region);
-    figure, imshow(resultImg);
-    result
-
+    if ~debug
+        [resultImg, result] = PrototypeGeneratePath(raster, img, imgs, region, 0, 0, 0);
+        figure, imshow(resultImg);
+        set(handles.text1, 'String', result);
+    end
 end
 
 %{
@@ -34,16 +37,6 @@ end
     img(uint16(thisBB(2):thisBB(2)+a-1) , uint16(thisBB(1):thisBB(1)+a-1)) = thisImage{k};
     
 %}
-
-
-
-
-
-
-
-
-
-
 
 %********************
 %{

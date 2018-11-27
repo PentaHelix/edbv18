@@ -1,7 +1,36 @@
 %Author: Michael Raimer - 11701255
-function [img, ret] = PrototypeGeneratePath(raster, img, imgs, region)
-   [x,y] = findPoint(raster);
-    [img, ret] = calculate(raster, img, imgs, region, x, y);
+function [img, ret, data] = PrototypeGeneratePath(raster, img, imgs, region, count, data, ret)
+    if count==0
+        ret = 'ok';
+        [x,y] = findPoint(raster);
+        oldX = x;
+        oldY = y;
+        while ~strcmp(ret,'error') && ~strcmp(ret, 'end')
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret);
+            oldX = x;
+            oldY = y;
+            x = nextX;
+            y = nextY;
+        end 
+    else
+        if count == 1
+            [x,y] = findPoint(raster);
+            oldX = x;
+            oldY = y;
+            ret = 'ok';
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret);
+            x = nextX;
+            y = nextY;
+            data = [oldX oldY x y];
+        else
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret);
+            %oldX = x;
+            %oldY = y;
+            x = nextX;
+            y = nextY;
+            data = [data(3) data(4) x y];
+        end
+    end
 end
 
 %Author: Michael Raimer - 11701255
@@ -18,11 +47,13 @@ function [x,y] = findPoint(raster)
 end
 
 %Author: Michael Raimer - 11701255
-function [img, ret] = calculate(raster, img, imgs, region, x, y)
+function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret)
+    %{
     oldX = x;
     oldY = y;
     ret = 'ok';
-    while ~strcmp(ret,'error') && ~strcmp(ret, 'end')
+    while ~strcmp(ret,'error') && ~strcmp(ret, 'end') 
+    %} 
         [nextX, nextY, dir] = getNextCell(raster, oldX, oldY, x, y);
         next = raster(nextY, nextX);
         switch next
@@ -181,13 +212,15 @@ function [img, ret] = calculate(raster, img, imgs, region, x, y)
             case "nothing"
                 ret= 'error';
                 %return
+    %{
         end
         oldX = x;
         oldY = y;
         x = nextX;
         y = nextY;
     end
-    
+    %}
+        end
 end
 
 %Author: Michael Raimer - 11701255

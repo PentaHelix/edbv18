@@ -22,12 +22,11 @@ function varargout = MainGUI(varargin)
 
 % Edit the above text to modify the response to help MainGUI
 
-% Last Modified by GUIDE v2.5 05-Nov-2018 18:52:07
+% Last Modified by GUIDE v2.5 26-Nov-2018 22:45:07
 
 % Begin initialization code - DO NOT EDIT
+%edit GUI with 'guide'
 clc;
-global prototype;
-prototype = true;
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -85,42 +84,110 @@ cla(handles.axes1);
 axes(handles.axes1);
 hold off;
 cla reset;
-img = LoadImage(handles);
-setGlobalImg(img)
+LoadImage(handles);
+handles.img=0;
+handles.imgs=0;
+handles.region=0;
+handles.data=0;
+handles.ret=0;
+handles.count =0;
+guidata(handles.pushbutton4,handles);
+set(handles.text1, 'String', '...');
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if getPrototypeFlag
-    PrototypeMain(handles, getGlobalImg)
+if get(handles.checkbox1, 'Value');
+    set(handles.text1, 'String', 'running...');
+    PrototypeMain(handles, getimage(handles.axes1), false);
 else
 end
-
-
-function setGlobalImg(val)
-global x
-x = val;
-
-function r = getGlobalImg
-global x
-r = x;
-
-
-function setPrototypeFlag(val)
-global y
-y = val;
-
-function r = getPrototypeFlag
-global y
-r = y;
-
 
 % --- Executes on button press in checkbox1.
 function checkbox1_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-setPrototypeFlag(true)
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
+
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%run-Button
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%Step-Button
+
+%data=get(handles.pushbutton4,'UserData');
+if get(handles.checkbox1, 'Value')
+    h=guidata(handles.pushbutton4);
+    if h.count == 0
+        [raster, img, imgs, region] = PrototypeMain(handles, getimage(handles.axes1), true);
+        handles.raster = raster;%[raster, img, imgs, region, count+1];
+        handles.img = img;
+        handles.imgs = imgs;
+        handles.region = region;
+        handles.count = h.count+1;
+        guidata(handles.pushbutton4,handles);
+        rectangle('Position', region{1}, ...
+            'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
+    else 
+        if h.count <= 24 && ~strcmp(h.ret,'end') && ~strcmp(h.ret,'error')
+            if h.count > 1
+               delete(h.oldRect); 
+            end
+            [resultImg, ret, data] = PrototypeGeneratePath(h.raster, h.img, h.imgs, h.region, h.count, h.data, h.ret);
+            imshow(resultImg,'Parent',handles.axes1);
+            k=6*(data(3)-1)+data(4);
+            handles.oldRect = rectangle('Position', h.region{k}, ...
+            'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
+            %handles.raster = h.raster;%[raster, img, imgs, region, count+1];
+            handles.img = resultImg;
+            handles.data = data;
+            handles.ret=ret;
+            handles.count = h.count+1;
+            guidata(handles.pushbutton4,handles);
+            set(handles.text2, 'String', h.raster(k));
+            if strcmp(ret,'end') || strcmp(ret,'error')
+               set(handles.text1, 'String', h.ret);
+            end
+        end 
+    end
+end
+
+
+%figure, imshow(resultImg);
+%set(handles.text1, 'String', result);
+
+% --- Executes on button press in checkbox2.
+function checkbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+value = get(handles.checkbox2, 'Value');
+t1='off';
+t2='on';
+if ~value
+    t1 = 'on';
+    t2 = 'off';
+end
+set(handles.pushbutton2,'Enable',t1)
+set(handles.pushbutton3,'Enable',t2)
+set(handles.pushbutton4,'Enable',t2)
+%handles.img=0;
+%handles.imgs=0;
+%handles.region=0;
+%handles.data=0;
+%handles.ret=0;
+%handles.count =0;
+%guidata(handles.pushbutton4,handles);
+% Hint: get(hObject,'Value') returns toggle state of checkbox2
