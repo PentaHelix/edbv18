@@ -16,21 +16,33 @@ function type = PrototypeCellCheck(img)
         %}
 
         img{k} = imcomplement(img{k});
-        img{k} = bwmorph(img{k},'clean',Inf); % IMPLEMENT Sarah
         img{k} = bwmorph(img{k},'fill',Inf); % IMPLEMENT Sarah
-        img{k} = bwmorph(img{k},'open',Inf); % IMPLEMENT Sarah
-        img{k} = bwmorph(img{k},'majority',Inf); % IMPLEMENT Sarah
-
+        img{k} = bwmorph(img{k},'clean',Inf); % IMPLEMENT Sarah
+        
+        %img{k} = bwmorph(img{k},'open',Inf); % IMPLEMENT Sarah
+        %img{k} = bwmorph(img{k},'majority',Inf); % IMPLEMENT Sarah
         corner1 = imcomplement(corner);
         corner1 = bwmorph(corner1,'clean',Inf);
         corner1 = bwmorph(corner1,'fill',Inf); 
-        corner1 = bwmorph(corner1,'open',Inf); 
-        corner1 = bwmorph(corner1,'majority',Inf);
+        %corner1 = bwmorph(corner1,'open',Inf); 
+        %corner1 = bwmorph(corner1,'majority',Inf);
 
         a = radon(img{k}, 90); % IMPLEMENT Michael
         b = radon(img{k}, 0); % IMPLEMENT Michael
         c = radon(img{k}, 45); % IMPLEMENT Michael
         
+        a(a==0) = [];
+        b(b==0) = [];
+        c(c==0) = [];
+        if isempty(a)
+            a = 0;
+        end
+        if isempty(b)
+            b = 0;
+        end
+        if isempty(c)
+            c = 0;
+        end
         %Debug-Ausgabe
         %{ 
         subplot(4, 2, 2)
@@ -38,7 +50,7 @@ function type = PrototypeCellCheck(img)
         subplot(4, 2, 3)
         imshow(corner);
         subplot(4, 2, 4)
-        imshow(corner1);
+        plot(1:length(c), c)
         subplot(4, 2, 5)
         plot(1:length(a), a)
         subplot(4, 2, 6)
@@ -86,6 +98,8 @@ function type = PrototypeCellCheck(img)
         rightA=0;
         rightB=0;
         leftB=0;
+        sa = skewness(a);
+        sb = skewness(b);
         %if maxC > maxA && maxC > maxB
         %    type{k} = "point";
         %if (maxC/maxA >= 0.8 && maxC/maxA <= 1) || (maxA/maxC >= 0.8 && maxA/maxC <= 1)|| maxB/maxA >= 3
@@ -93,7 +107,7 @@ function type = PrototypeCellCheck(img)
             type{k} = "vline";
         elseif maxB < maxC && maxC < maxA && maxA/maxB > 2
             type{k} = "hline";
-        elseif maxA > 60 && maxB > 60
+        elseif sa > 0 && sb > 0 %maxA > 60 && maxB > 60 
             leftA = sum(a(1:indexA-20));
             rightA = sum(a(indexA+20:length(a)));
             leftB = sum(b(1:indexB-20));
@@ -111,7 +125,7 @@ function type = PrototypeCellCheck(img)
                    type{k}="cornerRO";
                end
             end
-        elseif maxA > 30 && maxB > 30 
+        elseif sa < 0 && sb < 0 %maxA > 30 && maxB > 30 
             type{k} = "point";
         end
         
@@ -124,9 +138,13 @@ function type = PrototypeCellCheck(img)
         [maxA maxB maxC]
         [leftA rightA]
         [leftB rightB]
+        skewness(a)
+        skewness(b)
         type{k}
+        
         %}
     end 
+    
 end
 
 %Author: Michael Raimer - 11701255
