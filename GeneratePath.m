@@ -1,12 +1,12 @@
 %Author: Michael Raimer - 11701255
-function [img, ret, data] = PrototypeGeneratePath(raster, img, imgs, region, count, data, ret)
+function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data, ret, prototype)
     if count==0
         ret = 'ok';
         [x,y] = findPoint(raster);
         oldX = x;
         oldY = y;
         while ~strcmp(ret,'error') && ~strcmp(ret, 'end')
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret);
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
             oldX = x;
             oldY = y;
             x = nextX;
@@ -18,14 +18,12 @@ function [img, ret, data] = PrototypeGeneratePath(raster, img, imgs, region, cou
             oldX = x;
             oldY = y;
             ret = 'ok';
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret);
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
             x = nextX;
             y = nextY;
             data = [oldX oldY x y];
         else
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret);
-            %oldX = x;
-            %oldY = y;
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret, prototype);
             x = nextX;
             y = nextY;
             data = [data(3) data(4) x y];
@@ -47,23 +45,17 @@ function [x,y] = findPoint(raster)
 end
 
 %Author: Michael Raimer - 11701255
-function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret)
-    %{
-    oldX = x;
-    oldY = y;
-    ret = 'ok';
-    while ~strcmp(ret,'error') && ~strcmp(ret, 'end') 
-    %} 
+function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype)
         [nextX, nextY, dir] = getNextCell(raster, oldX, oldY, x, y);
         next = raster(nextY, nextX);
         switch next
             case "hline"
                 if(dir == "up" || dir == "down")
-                    img = rotate(img, imgs, 1, nextX, nextY, region);
+                    img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                 end
             case "vline"
                 if(dir == "left" || dir == "right")
-                    img = rotate(img, imgs, 1, nextX, nextY, region);
+                    img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                 end
             case "point"
                 ret = 'end';
@@ -75,9 +67,9 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                         ret = 'error';
                         return;
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="left")
                     
@@ -85,23 +77,23 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                         ret = 'error';
                         return;
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="up")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  elseif(dir=="down")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end 
                  end
             case "cornerLO"
@@ -111,32 +103,32 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                         ret = 'error';
                         return;
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="left")
                     if(nextDir=="right" || nextDir=="left")
                         ret = 'error';
                         return;
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="up")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  elseif(dir=="down")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end 
                  end
             case "cornerRU"
@@ -146,32 +138,32 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                         ret = 'error';
                         return;
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="left")
                     if(nextDir=="right" || nextDir=="left")
                         ret = 'error';
                         return;
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="up")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end 
                  elseif(dir=="down")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  end
             case "cornerRO"
@@ -181,50 +173,41 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                         ret = 'error';
                         return;
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="left")
                     if(nextDir=="right" || nextDir=="left")
                         ret = 'error';
                         return;
                     elseif(nextDir=="up")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     elseif(nextDir=="down")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
                  elseif(dir=="up")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 1, nextX, nextY, region);
+                        img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end 
                  elseif(dir=="down")
                     if(nextDir=="up" || nextDir=="down")
                         ret = 'error';
                         return;
                     elseif(nextDir=="right")
-                        img = rotate(img, imgs, 2, nextX, nextY, region);
+                        img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     elseif(nextDir=="left")
-                        img = rotate(img, imgs, 3, nextX, nextY, region);
+                        img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  end
             case "nothing"
                 ret= 'error';
-                %return
-    %{
-        end
-        oldX = x;
-        oldY = y;
-        x = nextX;
-        y = nextY;
-    end
-    %}
         end
 end
 
 %Author: Michael Raimer - 11701255
-function img = rotate(img, imgs, n, x, y, region)
+function img = rotate(img, imgs, n, x, y, region, prototype)
     k = 6*(x-1)+y;
     thisBB = region{k};
     s = size(imgs{k});
@@ -233,10 +216,15 @@ function img = rotate(img, imgs, n, x, y, region)
     end
     a = s(2);
     imgs{k} = imgs{k}(1:a, 1:a);
-    imgs{k} = rot90(imgs{k}, n);  % IMPLEMENT Gerhard
+    
+    if prototype
+        imgs{k} = rot90(imgs{k}, n);  % IMPLEMENT Gerhard
+    else
+        % IMPLEMENT Gerhard
+    end
+    
     img(uint16(thisBB(2):thisBB(2)+a-1) , uint16(thisBB(1):thisBB(1)+a-1)) = imgs{k};
-    %figure, imshow(img);
-end % IMPLEMENT
+end
 
 %Author: Michael Raimer - 11701255
 function [x, y, dir] = getNextCell(raster, oldX, oldY, x, y)

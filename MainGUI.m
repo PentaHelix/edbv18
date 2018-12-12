@@ -101,8 +101,10 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if get(handles.checkbox1, 'Value');
     set(handles.text1, 'String', 'running...');
-    PrototypeMain(handles, getimage(handles.axes1), false);
+    Main(handles, getimage(handles.axes1), false, true);
 else
+    set(handles.text1, 'String', 'running...');
+    Main(handles, getimage(handles.axes1), false, false);
 end
 
 % --- Executes on button press in checkbox1.
@@ -112,13 +114,6 @@ function checkbox1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
 
-
-% --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%run-Button
 
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)
@@ -131,7 +126,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 if get(handles.checkbox1, 'Value')
     h=guidata(handles.pushbutton4);
     if h.count == 0
-        [raster, img, imgs, region] = PrototypeMain(handles, getimage(handles.axes1), true);
+        [raster, img, imgs, region] = Main(handles, getimage(handles.axes1), true, get(handles.checkbox1, 'Value'));
         handles.raster = raster;%[raster, img, imgs, region, count+1];
         handles.img = img;
         handles.imgs = imgs;
@@ -145,7 +140,7 @@ if get(handles.checkbox1, 'Value')
             if h.count > 1
                delete(h.oldRect); 
             end
-            [resultImg, ret, data] = PrototypeGeneratePath(h.raster, h.img, h.imgs, h.region, h.count, h.data, h.ret);
+            [resultImg, ret, data] = GeneratePath(h.raster, h.img, h.imgs, h.region, h.count, h.data, h.ret, get(handles.checkbox1, 'Value'));
             imshow(resultImg,'Parent',handles.axes1);
             k=6*(data(3)-1)+data(4);
             handles.oldRect = rectangle('Position', h.region{k}, ...
@@ -181,7 +176,6 @@ if ~value
     t2 = 'off';
 end
 set(handles.pushbutton2,'Enable',t1)
-set(handles.pushbutton3,'Enable',t2)
 set(handles.pushbutton4,'Enable',t2)
 %handles.img=0;
 %handles.imgs=0;

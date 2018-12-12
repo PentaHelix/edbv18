@@ -1,5 +1,5 @@
 %Author: Michael Raimer - 11701255
-function type = PrototypeCellCheck(img)
+function type = CellCheck(img, prototype)
     for k=1:length(img)
         [corner, line, point] = loadReference();
         corner = rgb2gray(corner);
@@ -15,21 +15,27 @@ function type = PrototypeCellCheck(img)
         imshow(img{k});
         %}
 
-        img{k} = imcomplement(img{k});
-        img{k} = bwmorph(img{k},'fill',Inf); % IMPLEMENT Sarah
-        img{k} = bwmorph(img{k},'clean',Inf); % IMPLEMENT Sarah
-        
-        %img{k} = bwmorph(img{k},'open',Inf); % IMPLEMENT Sarah
-        %img{k} = bwmorph(img{k},'majority',Inf); % IMPLEMENT Sarah
+        if prototype
+            img{k} = imcomplement(img{k});
+            img{k} = bwmorph(img{k},'fill',Inf); % IMPLEMENT Sarah
+            img{k} = bwmorph(img{k},'clean',Inf); % IMPLEMENT Sarah
+        else
+            % IMPLEMENT Sarah
+        end
+
         corner1 = imcomplement(corner);
         corner1 = bwmorph(corner1,'clean',Inf);
         corner1 = bwmorph(corner1,'fill',Inf); 
         %corner1 = bwmorph(corner1,'open',Inf); 
         %corner1 = bwmorph(corner1,'majority',Inf);
 
-        a = radon(img{k}, 90); % IMPLEMENT Michael
-        b = radon(img{k}, 0); % IMPLEMENT Michael
-        c = radon(img{k}, 45); % IMPLEMENT Michael
+        if prototype
+            a = radon(img{k}, 90); % IMPLEMENT Michael
+            b = radon(img{k}, 0); % IMPLEMENT Michael
+            c = radon(img{k}, 45); % IMPLEMENT Michael
+        else
+            % IMPLEMENT Michael
+        end
         
         a(a==0) = [];
         b(b==0) = [];
@@ -210,10 +216,6 @@ function [V, K] = corrCalc(x,  y)
     end
     [V,K]=max(s) ;
 end
-
- 
-
-
 
 %{
 function [res]=myradon(f)
