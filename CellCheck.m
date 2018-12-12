@@ -3,7 +3,11 @@ function type = CellCheck(img, prototype)
     for k=1:length(img)
         [corner, line, point] = loadReference();
         corner = rgb2gray(corner);
-        corner = imbinarize(corner,0.75); % IMPLEMENT Gerhard
+        if prototype
+            corner = imbinarize(corner,0.75); % IMPLEMENT Gerhard
+        else
+            % IMPLEMENT Gerhard
+        end
         
         il = size(img{k});
         img{k} = img{k}(25:il(1)-25, 25:il(2)-25); 
@@ -26,14 +30,14 @@ function type = CellCheck(img, prototype)
         corner1 = imcomplement(corner);
         corner1 = bwmorph(corner1,'clean',Inf);
         corner1 = bwmorph(corner1,'fill',Inf); 
-        %corner1 = bwmorph(corner1,'open',Inf); 
-        %corner1 = bwmorph(corner1,'majority',Inf);
 
         if prototype
             a = radon(img{k}, 90); % IMPLEMENT Michael
             b = radon(img{k}, 0); % IMPLEMENT Michael
             c = radon(img{k}, 45); % IMPLEMENT Michael
+            %[a, b, c] = Projections(img{k}, 0);
         else
+            %[a, b, c] = Projections(img{k});
             % IMPLEMENT Michael
         end
         
@@ -61,6 +65,31 @@ function type = CellCheck(img, prototype)
         plot(1:length(a), a)
         subplot(4, 2, 6)
         plot(1:length(b), b)
+        
+        %{%
+        d(d==0) = [];
+        e(e==0) = [];
+        f(f==0) = [];
+        if isempty(d)
+            d = 0;
+        end
+        if isempty(e)
+            e = 0;
+        end
+        if isempty(f)
+            f = 0;
+        end
+        figure
+        subplot(4, 2, 1)
+        plot (1:length(d), d, 'r-');
+        subplot(4, 2, 2)
+        plot (1:length(e), e, 'r-');
+        subplot(4, 2, 3)
+        plot (1:length(f), f, 'r-');
+        subplot(4, 2, 4)
+        imshow(corner)
+        subplot(4, 2, 5)
+        imshow(img{k})
         %}
         
         %{ 
@@ -109,9 +138,9 @@ function type = CellCheck(img, prototype)
         %if maxC > maxA && maxC > maxB
         %    type{k} = "point";
         %if (maxC/maxA >= 0.8 && maxC/maxA <= 1) || (maxA/maxC >= 0.8 && maxA/maxC <= 1)|| maxB/maxA >= 3
-        if maxA < maxC && maxC < maxB && maxB/maxA > 2
+        if  maxB/maxA > 2 % /*maxA < maxC && maxC < maxB &&*/
             type{k} = "vline";
-        elseif maxB < maxC && maxC < maxA && maxA/maxB > 2
+        elseif maxA/maxB > 2 % maxB < maxC && maxC < maxA &&
             type{k} = "hline";
         elseif sa > 0 && sb > 0 %maxA > 60 && maxB > 60 
             leftA = sum(a(1:indexA-20));
@@ -159,219 +188,5 @@ function [corner, line, point] = loadReference
     line = imread('line.png');
     point = imread('point.png');
 end
-
-
-function [v,h,d,a]=imSignature(M)
-    h=sum(M, 1) / size(M, 1);
-    v = rot90( flipud (sum(M,  2) /  size (M,  1))) ;
-    d = diagSumCalc(M) ;
-    a = diagSumCalc(M,'a');
-end
-
-
-function [dsum] = diagSumCalc(M,  a)
-    if nargin == 2 && ~strcmp(a,'d')
-        if strcmp(a ,'a')
-            M = fliplr(M);
-        else
-            error('Error :  second  parameter  should  be a or d');
-        end
-    end
-    N=size(M,2);
-    M = double(M) ;
-    dsum = zeros (1, 2*N-1);
-    divider = [1:N N-1:-1:1];
-    M_= M(:);
-
-    for i=1:N+1
-        tmp = M_(i:N+1:end);
-        if(i<=N)
-            dsum(N+1-i) = dsum(N+1-i) + sum(tmp(1:N+1-i));
-        end
-        if(i>2)
-            dsum(2*N+2-i) = dsum(2*N+2-i) + sum(tmp(N+2-i:end));
-        end
-    end
-    dsum = dsum  ./  divider;
-end
-
-function [V, K] = corrCalc(x,  y)
-    if (length(x)>length(y))
-        tmp = x ;
-        x=y;
-        y=tmp;
-    end
-    M=length(y)-length(x) ;
-    s=zeros(M, 1);
-    xavg = mean(x) ;
-    for i = 1: length(s)
-        s(i) = 0;
-        divider = 0;
-        yavg = mean(y( i : i-1+length(x)));
-        for j=1:length(x)
-            s(i) = s(i) + ((x(j)-xavg)*(y(i + j-1)-yavg) ) ;
-            divider = s(i) + (((x(j)-xavg) )^2*((y(i + j-1)-yavg) )^2) ;
-        end
-        s(i) = s(i) / sqrt(divider);
-    end
-    [V,K]=max(s) ;
-end
-
-%{
-function [res]=myradon(f)
-    [N M]=size(f);
-    %Centeroftheimage
-    m=round(M/2);
-    n=round(N/2);
-    %Thetotalnumberofrho’sisthenumberofpixelsonthediagonal,since
-    %thisisthelargeststraightlineontheimagewhenrotating
-    rhomax=ceil(sqrt(M^2+N^2));
-    rc=round(rhomax/2);
-    mt=max(1);
-    %Preallocatethematrixusedtostoretheresult
-    %add1tobesure,couldalsobesubtractedwhencheckingbounds
-
-    %res=cast(zeros(rhomax+1,mt),'double');
-    res=zeros(rhomax+1,mt);
-    tic
-    %res = zeros(10000, 10000);
-    %for t=1:45
-    t=0;
-        %below45degrees,useyasvariable
-        costheta=cos(t*pi/180);
-        sintheta=sin(t*pi/180);
-        a=-costheta/sintheta;
-        %y=ax+b
-        for r=1:rhomax
-            rho=r-rc;
-            b=rho/sintheta;
-            %y=ax+b
-            ymax=min(round(-a*m+b),n-1);
-            ymin=max(round(a*m+b),-n);
-            for y=ymin:ymax-1
-                x=(y-b)/a;
-                if isnan(x)
-                    x=0;
-                end
-                xfloor=floor(x);
-
-                %Theintegerpartofx
-                xup=x-xfloor;
-                %Thedecimalsofx
-                xlow=1-xup;
-                %Whatitsays
-                x=xfloor;
-                x=max(x,-m);
-                x=min(x,m-2);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+xlow*f(y+n+1,x+m+1);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+xup*f(y+n+1,x+m+2);
-            end
-        end
-    %end
-
-    %{
-    %for t=46:90
-    t=90;
-        costheta=cos(t*pi/180);
-        sintheta=sin(t*pi/180);
-        a=-costheta/sintheta;
-        %y=ax+b
-
-        for r=1:rhomax
-            rho=r-rc;
-            b=rho/sintheta;
-            %y=ax+b
-            xmax=min(round((-n-b)/a),m-1);
-            xmin=max(round((n-b)/a),-m);
-            for x=xmin:xmax-1
-                y=a*x+b;
-                yfloor=floor(y);
-                yup=y-yfloor;
-                ylow=1-yup;
-                y=yfloor;
-                y=max(y,-n);
-                y=min(y,n-2);
-                res(rhomax-r+1,mt-t+1)=res(rhomax-r+1,mt-t+1)+ylow*f(y+n+1,x+m+1);
-                res(rhomax-r+1,mt-t+1)=res(rhomax-r+1,mt-t+1)+yup*f(y+n+1,x+m+1);
-            end
-        end
-    %end
-%}
-    %{
-    for t=91:135
-        costheta=cos(t*pi/180);
-        sintheta=sin(t*pi/180);
-        a=-costheta/sintheta;
-        %y=ax+b
-        for r=1:rhomax
-            rho=r-rc;
-            b=rho/sintheta;
-            %y=ax+b
-            xmax=min(round((n-b)/a),m-1);
-            xmin=max(round((-n-b)/a),-m);
-            for x=xmin:xmax
-                y=a*x+b;
-                yfloor=floor(y);
-                yup=y-yfloor;
-                ylow=1-yup;
-                y=yfloor;
-                y=max(y,-n);
-                y=min(y,n-2);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+ylow*f(y+n+1,x+m+1);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+yup*f(y+n+2,x+m+1);
-            end
-        end
-    end
-
-    for t=136:179
-        %above135degrees,useyasvariable
-        costheta=cos(t*pi/180);
-        sintheta=sin(t*pi/180);
-        a=-costheta/sintheta;
-        %y=ax+b
-        for r=1:rhomax
-            rho=r-rc;
-            b=rho/sintheta;
-            %y=ax+b
-            ymax=min(round(a*m+b),n-1);
-            ymin=max(round(-a*m+b),-n);
-            for y=ymin:ymax
-                x=(y-b)/a;
-                xfloor=floor(x);
-                xup=x-xfloor;
-                xlow=1-xup;
-                x=xfloor;
-                x=max(x,-m);
-                x=min(x,m-2);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+xlow*f(y+n+1,x+m+1);
-                res(rhomax-r+1,mt-t)=res(rhomax-r+1,mt-t)+xup*f(y+n+1,x+m+2);
-            end
-        end
-    end
-
-    for t=180
-        %thesum-lineisvertical
-        rhooffset=round((rhomax-M)/2);
-        for x=1:M
-            %cannotuserasxinbothresandfsincetheyarenotthesamesize
-            r=x+rhooffset;
-            r=rhomax-r+1;
-            for y=1:N
-                res(r,t)=res(r,t)+f(y,x);
-            end
-        end
-    end
-    %}
-
-    toc
-    figure, plot(1:length(res), res)
-    %rhoaxis=(1:rhomax+1)-rc;
-    %figure
-    %imagesc(1:180,rhoaxis,res);
-    %colormap(hot),colorbar  
-
-end
-%}       
-        
         
 

@@ -1,3 +1,4 @@
+%Author of all functions: Michael Raimer - 11701255
 function varargout = MainGUI(varargin)
 % MAINGUI MATLAB code for MainGUI.fig
 %      MAINGUI, by itself, creates a new MAINGUI or raises the existing
