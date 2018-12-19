@@ -181,12 +181,5 @@ function type = CellCheck(img, prototype)
     end 
     
 end
-
-%Author: Michael Raimer - 11701255
-function [corner, line, point] = loadReference
-    corner = imread('corner.png');
-    line = imread('line.png');
-    point = imread('point.png');
-end
         
 
