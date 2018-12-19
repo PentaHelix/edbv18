@@ -27,12 +27,14 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
         [imgs, region] = PrototypeCrop(img);  % IMPLEMENT Yana & Jakob
     else
         % IMPLEMENT Yana & Jakob
+        [imgs, region] = Crop(img);
     end
     
     types = CellCheck(imgs, prototype);
     
-    raster = string(types(:));
-    rasterM = reshape(raster, [6, 4]);
+    %raster = string(types(:));
+    rasterM = [types{:}];
+    rasterM = reshape(rasterM, [6, 4]);
     if ~debug
         [resultImg, result] = GeneratePath(rasterM, img, imgs, region, 0, 0, 0, prototype);
         figure, imshow(resultImg);

@@ -1,11 +1,11 @@
 %Author: Michael Raimer - 11701255
 function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data, ret, prototype)
     if count==0
-        ret = 'ok';
+        ret = "ok";
         [x,y] = findPoint(raster);
         oldX = x;
         oldY = y;
-        while ~strcmp(ret,'error') && ~strcmp(ret, 'end')
+        while ~strcmp(ret,"error") && ~strcmp(ret, "end")
             [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
             oldX = x;
             oldY = y;
@@ -17,7 +17,7 @@ function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data,
             [x,y] = findPoint(raster);
             oldX = x;
             oldY = y;
-            ret = 'ok';
+            ret = "ok";
             [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
             x = nextX;
             y = nextY;
@@ -36,7 +36,7 @@ function [x,y] = findPoint(raster)
     x = 0; y = 0;
     for y=1:6
         for x=1:4
-            if(raster(y, x) == 'point')
+            if(raster(y, x) == "point")
                 return
             end
         end
@@ -49,160 +49,160 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
         [nextX, nextY, dir] = getNextCell(raster, oldX, oldY, x, y);
         next = raster(nextY, nextX);
         switch next
-            case 'hline'
-                if(dir == 'up' || dir == 'down')
+            case "hline"
+                if(dir == "up" || dir == "down")
                     img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                 end
-            case 'vline'
-                if(dir == 'left' || dir == 'right')
+            case "vline"
+                if(dir == "left" || dir == "right")
                     img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                 end
-            case 'point'
-                ret = 'end';
+            case "point"
+                ret = "end";
                 return
-            case 'cornerLU'
+            case "cornerLU"
                 [a, b, nextDir] = getNextCell(raster, x, y, nextX, nextY);
-                 if(dir=='right')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 if(dir=="right")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='left')
+                 elseif(dir=="left")
                     
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='up')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="up")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
-                 elseif(dir=='down')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="down")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end 
                  end
-            case 'cornerLO'
+            case "cornerLO"
                  [a, b, nextDir] = getNextCell(raster, x, y, nextX, nextY);
-                 if(dir=='right')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 if(dir=="right")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='left')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 elseif(dir=="left")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='up')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="up")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
-                 elseif(dir=='down')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="down")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end 
                  end
-            case 'cornerRU'
+            case "cornerRU"
                 [a, b, nextDir] = getNextCell(raster, x, y, nextX, nextY);
-                 if(dir=='right')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 if(dir=="right")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='left')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 elseif(dir=="left")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='up')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="up")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
                     end 
-                 elseif(dir=='down')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="down")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  end
-            case 'cornerRO'
+            case "cornerRO"
                  [a, b, nextDir] = getNextCell(raster, x, y, nextX, nextY);
-                 if(dir=='right')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 if(dir=="right")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='left')
-                    if(nextDir=='right' || nextDir=='left')
-                        ret = 'error';
+                 elseif(dir=="left")
+                    if(nextDir=="right" || nextDir=="left")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='up')
+                    elseif(nextDir=="up")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
-                    elseif(nextDir=='down')
+                    elseif(nextDir=="down")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end
-                 elseif(dir=='up')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="up")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 1, nextX, nextY, region, prototype);
                     end 
-                 elseif(dir=='down')
-                    if(nextDir=='up' || nextDir=='down')
-                        ret = 'error';
+                 elseif(dir=="down")
+                    if(nextDir=="up" || nextDir=="down")
+                        ret = "error";
                         return;
-                    elseif(nextDir=='right')
+                    elseif(nextDir=="right")
                         img = rotate(img, imgs, 2, nextX, nextY, region, prototype);
-                    elseif(nextDir=='left')
+                    elseif(nextDir=="left")
                         img = rotate(img, imgs, 3, nextX, nextY, region, prototype);
                     end 
                  end
-            case 'nothing'
-                ret= 'error';
+            case "nothing"
+                ret= "error";
         end
 end
 
@@ -228,32 +228,32 @@ end
 
 %Author: Michael Raimer - 11701255
 function [x, y, dir] = getNextCell(raster, oldX, oldY, x, y)
-    dir = 'nothing';
+    dir = "nothing";
     if y < length(raster(:,1))
-        if(raster(y+1, x) ~= 'nothing' && (y+1 ~= oldY || x ~= oldX))
+        if(raster(y+1, x) ~= "nothing" && (y+1 ~= oldY || x ~= oldX))
             y = y+1;
-            dir = 'down';
+            dir = "down";
             return
         end
     end
     if x < length(raster(1,:))
-        if(raster(y, x+1) ~= 'nothing' && (y ~= oldY || x+1 ~= oldX))
+        if(raster(y, x+1) ~= "nothing" && (y ~= oldY || x+1 ~= oldX))
             x = x+1;
-            dir = 'right';
+            dir = "right";
             return
         end
     end
     if y > 1  
-        if(raster(y-1, x) ~= 'nothing' && (y-1 ~= oldY || x ~= oldX))
+        if(raster(y-1, x) ~= "nothing" && (y-1 ~= oldY || x ~= oldX))
             y = y-1;
-            dir = 'up';
+            dir = "up";
             return
         end
     end
     if x > 1
-        if(raster(y, x-1) ~= 'nothing' && (y ~= oldY || x-1 ~= oldX))
+        if(raster(y, x-1) ~= "nothing" && (y ~= oldY || x-1 ~= oldX))
             x = x-1;
-            dir = 'left';
+            dir = "left";
             return
         end
     end

@@ -1,14 +1,7 @@
 %Author: Michael Raimer - 11701255
 function type = CellCheck(img, prototype)
     for k=1:length(img)
-        [corner, line, point] = loadReference();
-        corner = rgb2gray(corner);
-        if prototype
-            corner = imbinarize(corner,0.75); % IMPLEMENT Gerhard
-        else
-            % IMPLEMENT Gerhard
-        end
-        
+       
         il = size(img{k});
         img{k} = img{k}(25:il(1)-25, 25:il(2)-25); 
 
@@ -27,15 +20,11 @@ function type = CellCheck(img, prototype)
             % IMPLEMENT Sarah
         end
 
-        corner1 = imcomplement(corner);
-        corner1 = bwmorph(corner1,'clean',Inf);
-        corner1 = bwmorph(corner1,'fill',Inf); 
-
         if prototype
             a = radon(img{k}, 90); % IMPLEMENT Michael
             b = radon(img{k}, 0); % IMPLEMENT Michael
             c = radon(img{k}, 45); % IMPLEMENT Michael
-            %[a, b, c] = Projections(img{k}, 0);
+            [a, b, c] = Projections(img{k});
         else
             %[a, b, c] = Projections(img{k});
             % IMPLEMENT Michael
@@ -57,8 +46,6 @@ function type = CellCheck(img, prototype)
         %{ 
         subplot(4, 2, 2)
         imshow(img{k});
-        subplot(4, 2, 3)
-        imshow(corner);
         subplot(4, 2, 4)
         plot(1:length(c), c)
         subplot(4, 2, 5)
@@ -86,15 +73,12 @@ function type = CellCheck(img, prototype)
         plot (1:length(e), e, 'r-');
         subplot(4, 2, 3)
         plot (1:length(f), f, 'r-');
-        subplot(4, 2, 4)
-        imshow(corner)
         subplot(4, 2, 5)
         imshow(img{k})
         %}
         
         %{ 
             [v1 ,  h1,  d1,  a1] = imSignature(img{k});
-            %[v2 ,  h2,  d2,  a2] = imSignature(corner);
 
             %[Vv, Kv] = corrCalc(v1,  v2);
             %[Vh, Kh] = corrCalc(h1,  h2);
@@ -110,8 +94,6 @@ function type = CellCheck(img, prototype)
             plot (1:length(d1), d1, 'r-');
             subplot(4, 2, 4)
             plot (1:length(a1), a1, 'r-');
-            subplot(4, 2, 5)
-            imshow(corner)
             subplot(4, 2, 6)
             imshow(img{k})
 
@@ -128,7 +110,7 @@ function type = CellCheck(img, prototype)
         [maxA, indexA] = max(a);
         [maxB, indexB] = max(b);
         [maxC, indexC] = max(c);
-        type{k} = 'nothing';
+        type{k} = "nothing";
         leftA=0;
         rightA=0;
         rightB=0;
@@ -139,9 +121,9 @@ function type = CellCheck(img, prototype)
         %    type{k} = "point";
         %if (maxC/maxA >= 0.8 && maxC/maxA <= 1) || (maxA/maxC >= 0.8 && maxA/maxC <= 1)|| maxB/maxA >= 3
         if  maxB/maxA > 2 % /*maxA < maxC && maxC < maxB &&*/
-            type{k} = 'vline';
+            type{k} = "vline";
         elseif maxA/maxB > 2 % maxB < maxC && maxC < maxA &&
-            type{k} = 'hline';
+            type{k} = "hline";
         elseif sa > 0 && sb > 0 %maxA > 60 && maxB > 60 
             leftA = sum(a(1:indexA-20));
             rightA = sum(a(indexA+20:length(a)));
@@ -149,19 +131,19 @@ function type = CellCheck(img, prototype)
             rightB = sum(b(indexB+20:length(b))); 
             if leftA < rightA
                if leftB < rightB
-                   type{k}='cornerLU';
+                   type{k}="cornerLU";
                else
-                   type{k}='cornerRU';
+                   type{k}="cornerRU";
                end
             else
                if leftB < rightB
-                   type{k}='cornerLO';
+                   type{k}="cornerLO";
                else
-                   type{k}='cornerRO';
+                   type{k}="cornerRO";
                end
             end
         elseif sa < 0 && sb < 0 %maxA > 30 && maxB > 30 
-            type{k} = 'point';
+            type{k} = "point";
         end
         
         %Debug-Ausgabe

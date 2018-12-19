@@ -1,10 +1,11 @@
 function [v1 ,  h1,  d1]=Projections(img)
-    [v1 ,  h1,  d1,  a1] = imSignature(img);
+    %[v1 ,  h1,  d1,  a1] = imSignature(img);
     %v1 = v1 * 500;
     %h1 = h1 * 500;
     %d1 = d1 * 500;
     %d1 = a1 * 500;
-    d1 = diagSumCalcc(img);
+    [v1, h1] = hvSum(img);
+    d1 = diagSum(img);
     %[Vv, Kv] = corrCalc(v1,  v2);
     %[Vh, Kh] = corrCalc(h1,  h2);
     %[Vd, Kd] = corrCalc(d1,  d2);
@@ -24,17 +25,23 @@ function [v1 ,  h1,  d1]=Projections(img)
     
 end
 
+function[v, h]=hvSum(M)
+    h=sum(M, 1); 
+    v = rot90( flipud (sum(M,  2) )) ; 
+    d = rot90( flipud (sum(M,  2) )) ;
+end
+    
 function [v,h,d,a]=imSignature(M)
     h=sum(M, 1); % / size(M, 1)
     v = rot90( flipud (sum(M,  2) )) ; %/  size (M,  1)
     d = rot90( flipud (sum(M,  2) )) ; %/  size (M,  1)
     %a = rot45( (sum(M,  2) /  size (M,  1)) );
-    d = diagSumCalc(M) ;
-    a = diagSumCalc(M,'a');
+    %d = diagSumCalcc(M) ;
+    %a = diagSumCalcc(M,'a');
     %d = d.*a;
 end
 
-function [dsum] = diagSumCalcc(img)
+function [dsum] = diagSum(img)
 
     cols = size(img,2); %columns
     rows  = size(img,1); %rows
@@ -57,7 +64,7 @@ function [dsum] = diagSumCalcc(img)
 end
 
 
-function [dsum] = diagSumCalc(M,  a)
+function [dsum] = diagSumCalcc(M,  a)
     if nargin == 2 && ~strcmp(a,'d')
         if strcmp(a ,'a')
             M = fliplr(M);
