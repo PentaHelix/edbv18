@@ -128,7 +128,7 @@ function type = CellCheck(img, prototype)
         [maxA, indexA] = max(a);
         [maxB, indexB] = max(b);
         [maxC, indexC] = max(c);
-        type{k} = "nothing";
+        type{k} = 'nothing';
         leftA=0;
         rightA=0;
         rightB=0;
@@ -139,9 +139,9 @@ function type = CellCheck(img, prototype)
         %    type{k} = "point";
         %if (maxC/maxA >= 0.8 && maxC/maxA <= 1) || (maxA/maxC >= 0.8 && maxA/maxC <= 1)|| maxB/maxA >= 3
         if  maxB/maxA > 2 % /*maxA < maxC && maxC < maxB &&*/
-            type{k} = "vline";
+            type{k} = 'vline';
         elseif maxA/maxB > 2 % maxB < maxC && maxC < maxA &&
-            type{k} = "hline";
+            type{k} = 'hline';
         elseif sa > 0 && sb > 0 %maxA > 60 && maxB > 60 
             leftA = sum(a(1:indexA-20));
             rightA = sum(a(indexA+20:length(a)));
@@ -149,19 +149,19 @@ function type = CellCheck(img, prototype)
             rightB = sum(b(indexB+20:length(b))); 
             if leftA < rightA
                if leftB < rightB
-                   type{k}="cornerLU";
+                   type{k}='cornerLU';
                else
-                   type{k}="cornerRU";
+                   type{k}='cornerRU';
                end
             else
                if leftB < rightB
-                   type{k}="cornerLO";
+                   type{k}='cornerLO';
                else
-                   type{k}="cornerRO";
+                   type{k}='cornerRO';
                end
             end
         elseif sa < 0 && sb < 0 %maxA > 30 && maxB > 30 
-            type{k} = "point";
+            type{k} = 'point';
         end
         
         %Debug-Ausgabe

@@ -1,5 +1,5 @@
 %Author: Michael Raimer - 11701255
-function [raster, img, imgs, region] = Main(handles, img, debug, prototype)
+function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     % IMPLEMENT Zwischenschritte im GUI
     
     img = im2double(img);
@@ -31,10 +31,10 @@ function [raster, img, imgs, region] = Main(handles, img, debug, prototype)
     
     types = CellCheck(imgs, prototype);
     
-    raster = [types{:}];
-    raster = reshape(raster, [6, 4]);
+    raster = string(types(:));
+    rasterM = reshape(raster, [6, 4]);
     if ~debug
-        [resultImg, result] = GeneratePath(raster, img, imgs, region, 0, 0, 0, prototype);
+        [resultImg, result] = GeneratePath(rasterM, img, imgs, region, 0, 0, 0, prototype);
         figure, imshow(resultImg);
         set(handles.text1, 'String', result);
     end
