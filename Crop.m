@@ -22,7 +22,7 @@ function [imgs, region] = Crop(img)
 
     for k = 1 : length(y)
         thisBB = con(k).BoundingBox;
-        imgs{k} = imcrop(img, thisBB);  % IMPLEMENT Yana & Jakob
+        imgs{k} = myImcrop(img, thisBB);  % IMPLEMENT Yana & Jakob
         region{k} = thisBB;
     end 
     
@@ -32,6 +32,15 @@ function [imgs, region] = Crop(img)
     %    rectangle('Position', stats(i).BoundingBox, ...
     %    'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
     %end
+end
+
+%Author: Yana & Jakob
+function [stats] = myImcrop(img, scope)
+    x = scope(1);
+    y = scope(2);
+    width = scope(3);
+    height = scope(4);
+    stats = img(y:y+height-1, x:x+width-1);
 end
 
 %Author: Yana & Jakob
