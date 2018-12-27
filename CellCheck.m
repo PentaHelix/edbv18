@@ -18,6 +18,7 @@ function type = CellCheck(img, prototype)
             img{k} = bwmorph(img{k},'clean',Inf); % IMPLEMENT Sarah
         else
             % IMPLEMENT Sarah
+            img{k} = morphology(img{k});
         end
 
         if prototype
