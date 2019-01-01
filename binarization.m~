@@ -1,0 +1,15 @@
+%Author: Gerhard Andreas Stog 00954038
+function [binImg] = binarization(img, threshold)
+%BINARIZATION Binarize Image by Thresholding
+
+debug = "Binarization started";
+disp(debug);
+
+
+% Step 1: Mark every pixel <= threshold
+imgMarked
+
+binImg = img;
+    binImg(:,:,1) = 1;
+end
+
