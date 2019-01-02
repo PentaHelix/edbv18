@@ -5,17 +5,16 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     img = rgb2gray(img);
     
     if prototype
-          img = imbinarize(img,0.55);  % IMPLEMENT Gerhard
+          img = imbinarize(img,0.55);
     else
-          % IMPLEMENT Gerhard
-          img = binarization(img, 0.2); 
+          img = binarization(img, 0.2); % IMPLEMENT Gerhard
     end
         
      
     s = size(img);
     if s(1) < s(2)
         if prototype
-            img = rot90(img, 1);  % IMPLEMENT Gerhard
+            img = rot90(img, 1);
         else
             % IMPLEMENT Gerhard: rotate
         end
@@ -33,11 +32,18 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     
     %raster = string(types(:));
     rasterM = [types{:}];
-    rasterM = reshape(rasterM, [6, 4]);
-    if ~debug
-        [resultImg, result] = GeneratePath(rasterM, img, imgs, region, 0, 0, 0, prototype);
-        figure, imshow(resultImg);
-        set(handles.text1, 'String', result);
+    try
+        rasterM = reshape(rasterM, [6, 4]);
+      
+        if ~debug
+            [resultImg, result] = GeneratePath(rasterM, img, imgs, region, 0, 0, 0, prototype);
+            figure, imshow(resultImg);
+            set(handles.text1, 'String', result);
+        end
+    catch ME
+        %causeException = MException('MATLAB:myCode:dimensions','asdf');
+        %ME = addCause(ME,causeException);
+        set(handles.text1, 'String', 'ERROR!');
     end
 end
 

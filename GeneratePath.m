@@ -1,33 +1,37 @@
 %Author: Michael Raimer - 11701255
 function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data, ret, prototype)
-    if count==0
-        ret = "ok";
-        [x,y] = findPoint(raster);
-        oldX = x;
-        oldY = y;
-        while ~strcmp(ret,"error") && ~strcmp(ret, "end")
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
-            oldX = x;
-            oldY = y;
-            x = nextX;
-            y = nextY;
-        end 
-    else
-        if count == 1
+    try
+        if count==0
+            ret = "ok";
             [x,y] = findPoint(raster);
             oldX = x;
             oldY = y;
-            ret = "ok";
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
-            x = nextX;
-            y = nextY;
-            data = [oldX oldY x y];
+            while ~strcmp(ret,"error") && ~strcmp(ret, "end")
+                [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
+                oldX = x;
+                oldY = y;
+                x = nextX;
+                y = nextY;
+            end 
         else
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret, prototype);
-            x = nextX;
-            y = nextY;
-            data = [data(3) data(4) x y];
+            if count == 1
+                [x,y] = findPoint(raster);
+                oldX = x;
+                oldY = y;
+                ret = "ok";
+                [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
+                x = nextX;
+                y = nextY;
+                data = [oldX oldY x y];
+            else
+                [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret, prototype);
+                x = nextX;
+                y = nextY;
+                data = [data(3) data(4) x y];
+            end
         end
+    catch ME
+        ret = 'ERROR!';
     end
 end
 
@@ -211,14 +215,14 @@ function img = rotate(img, imgs, n, x, y, region, prototype)
     k = 6*(x-1)+y;
     thisBB = region{k};
     s = size(imgs{k});
-    if s(1) < s(2)
-       a = s(1);
-    end
+    %if s(1) < s(2)
+    %   a = s(1);
+    %end
     a = s(2);
     imgs{k} = imgs{k}(1:a, 1:a);
     
     if prototype
-        imgs{k} = rot90(imgs{k}, n);  % IMPLEMENT Gerhard
+        imgs{k} = rot90(imgs{k}, n);
     else
         % IMPLEMENT Gerhard
     end
