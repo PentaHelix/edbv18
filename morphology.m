@@ -14,7 +14,7 @@ function [imgNew] = compareElement(img,Element,value)
     imgNew = img;
     sz = size(imgOld);
     
-    while true                                              %do-while loop
+    %while true                                              %do-while loop
         for i=2:sz(1)-1                                     %rows
             for j=2:sz(2)-1                                 %columns
                 if isequal(imgOld(i-1:i+1,j-1:j+1),Element) %compares (same size) part of the picture with the structure element
@@ -22,9 +22,9 @@ function [imgNew] = compareElement(img,Element,value)
                 end
             end
         end
-        if ~isequal(imgOld,imgNew)                          %Checks if something has changed after comparing with the structure element
-            break                                           %if so there will be no further changes -> stop while loop
-        end
-        imgOld = imgNew;
-    end
+        %if ~isequal(imgOld,imgNew)                          %Checks if something has changed after comparing with the structure element
+            %break                                           %if so there will be no further changes -> stop while loop
+        %end
+        %imgOld = imgNew;
+    %end
 end

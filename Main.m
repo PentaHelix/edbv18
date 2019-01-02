@@ -1,6 +1,5 @@
 %Author: Michael Raimer - 11701255
 function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
-    % IMPLEMENT Zwischenschritte im GUI
     
     img = im2double(img);
     img = rgb2gray(img);
@@ -24,10 +23,9 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     imshow(img,'Parent',handles.axes1);
     
     if prototype
-        [imgs, region] = PrototypeCrop(img);  % IMPLEMENT Yana & Jakob
+        [imgs, region] = PrototypeCrop(img);
     else
-        % IMPLEMENT Yana & Jakob
-        [imgs, region] = Crop(img);
+        [imgs, region] = Crop(img); %IMPLEMENT Yana & Jakob
     end
     
     types = CellCheck(imgs, prototype);

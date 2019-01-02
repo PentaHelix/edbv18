@@ -1,6 +1,5 @@
 %Author: Michael Raimer - 11701255
 function [imgs, region] = PrototypeCrop(img)
-    % Trapezkorrektur IMPLEMENT Yana & Jakob
     stats = [regionprops(img, 'Extrema', 'Area', 'BoundingBox', 'Centroid'); regionprops(not(img), 'Extrema', 'Area', 'BoundingBox', 'Centroid')]; % IMPLEMENT Yana & Jakob
     
     x = [stats.Area];
@@ -22,7 +21,7 @@ function [imgs, region] = PrototypeCrop(img)
 
     for k = 1 : length(y)
         thisBB = stats(k).BoundingBox;
-        imgs{k} = imcrop(img, thisBB);  % IMPLEMENT Yana & Jakob
+        imgs{k} = imcrop(img, thisBB);
         region{k} = thisBB;
     end 
     
