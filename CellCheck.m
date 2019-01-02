@@ -14,16 +14,8 @@ function type = CellCheck(img, prototype)
 
         if prototype
             img{k} = imcomplement(img{k});
-            figure, imshow(img{k});
             img{k} = bwmorph(img{k},'fill',Inf);
-            img{k} = bwmorph(img{k},'clean',Inf);
-            figure, imshow(img{k});
-            
-            
-            img{k} = morphology(img{k}); % IMPLEMENT Sarah
-            img{k} = imcomplement(img{k});
-            figure, imshow(img{k});
-            
+            img{k} = bwmorph(img{k},'clean',Inf); 
         else
             img{k} = morphology(img{k}); % IMPLEMENT Sarah
             img{k} = imcomplement(img{k});
