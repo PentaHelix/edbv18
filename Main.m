@@ -7,7 +7,8 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     if prototype
           img = imbinarize(img,0.55);  % IMPLEMENT Gerhard
     else
-           % IMPLEMENT Gerhard: imbinarize
+          % IMPLEMENT Gerhard
+          img = binarization(img, 0.2); 
     end
         
      
