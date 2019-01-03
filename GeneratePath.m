@@ -1,7 +1,7 @@
 %Author: Michael Raimer - 11701255
 function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data, ret, prototype)
     try
-        if count==0
+        if count==0 %Normal-Mode:
             ret = "ok";
             [x,y] = findPoint(raster);
             oldX = x;
@@ -13,8 +13,8 @@ function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data,
                 x = nextX;
                 y = nextY;
             end 
-        else
-            if count == 1
+        else %Debug-Mode:
+            if count == 1 %Erster Durchlauf
                 [x,y] = findPoint(raster);
                 oldX = x;
                 oldY = y;
@@ -52,6 +52,10 @@ end
 function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype)
         [nextX, nextY, dir] = getNextCell(raster, oldX, oldY, x, y);
         next = raster(nextY, nextX);
+        if strcmp(dir, "nothing")
+           ret="error";
+           return;
+        end
         switch next
             case "hline"
                 if(dir == "up" || dir == "down")
@@ -206,7 +210,8 @@ function [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, o
                     end 
                  end
             case "nothing"
-                ret= "error";
+                ret = "error";
+                return;
         end
 end
 
@@ -238,28 +243,28 @@ function [x, y, dir] = getNextCell(raster, oldX, oldY, x, y)
         if(raster(y+1, x) ~= "nothing" && (y+1 ~= oldY || x ~= oldX))
             y = y+1;
             dir = "down";
-            return
+            return;
         end
     end
     if x < length(raster(1,:))
         if(raster(y, x+1) ~= "nothing" && (y ~= oldY || x+1 ~= oldX))
             x = x+1;
             dir = "right";
-            return
+            return;
         end
     end
     if y > 1  
         if(raster(y-1, x) ~= "nothing" && (y-1 ~= oldY || x ~= oldX))
             y = y-1;
             dir = "up";
-            return
+            return;
         end
     end
     if x > 1
         if(raster(y, x-1) ~= "nothing" && (y ~= oldY || x-1 ~= oldX))
             x = x-1;
             dir = "left";
-            return
+            return;
         end
     end
 end
