@@ -1,10 +1,18 @@
 %Author: Yana & Jakob
-function [imgs, region] = Crop(img)
+function [imgs, region] = Crop(img, prototype)
     % Trapezkorrektur IMPLEMENT Yana & Jakob
-    con = components(img);
+    if prototype
+        con = [regionprops(img, 'Extrema', 'Area', 'BoundingBox', 'Centroid'); regionprops(not(img), 'Extrema', 'Area', 'BoundingBox', 'Centroid')];
+    else    
+        con = components(img);
+    end
     
     x = [con.Area];
-    y = find(x < max(x)*0.15 & x > max(x)*0.015);
+    y = find(x < max(x)*0.3 & x > max(x)*0.015);
+    tmp=con(y);
+    m = min([tmp.Area]);
+    i = (m./[tmp.Area]) < 0.40;
+    y(i) = []; 
     con = con(y);
     
     %sort
@@ -31,7 +39,11 @@ function [imgs, region] = Crop(img)
 
     for k = 1 : length(y)
         thisBB = con(k).BoundingBox;
-        imgs{k} = myImcrop(img, thisBB);  % IMPLEMENT Yana & Jakob
+        if prototype
+            imgs{k} = imcrop(img, thisBB);
+        else
+            imgs{k} = myImcrop(img, thisBB);  % IMPLEMENT Yana & Jakob
+        end
         region{k} = thisBB;
     end 
     

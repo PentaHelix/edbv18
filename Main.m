@@ -2,19 +2,14 @@
 function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     
     img = im2double(img);
-    img = rgb2gray(img);
+    img = rgb2gray(img); 
     
-    %figure, imshow(imbinarize(img,0.55));
-    %figure, imshow(binarization(img, 0.55));
-    %a = imbinarize(img,0.55)-binarization(img, 0.55);
-    %b = binarization(img, 0.55)-imbinarize(img,0.55);
-    %figure, imshow(a);   
-    %figure, imshow(b);  
-    
+    ma=max(max(img))
+    val = ma*0.575
     if prototype
-          img = imbinarize(img,0.55);
+          img = imbinarize(img,val);
     else
-          img = imbinarize(img,0.55);
+          img = imbinarize(img,val);
           %img = binarization(img, 0.55); % IMPLEMENT Gerhard
     end
         
@@ -31,11 +26,7 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     
     imshow(img,'Parent',handles.axes1);
     
-    if prototype
-        [imgs, region] = PrototypeCrop(img);
-    else
-        [imgs, region] = Crop(img); %IMPLEMENT Yana & Jakob
-    end
+    [imgs, region] = Crop(img, prototype);
     
     types = CellCheck(imgs, prototype);
     
