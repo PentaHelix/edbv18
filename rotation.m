@@ -1,7 +1,17 @@
-function [outputArg1,outputArg2] = rotation(inputArg1,inputArg2)
-%ROTATION Summary of this function goes here
-%   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+%Author: Gerhard Andreas Stog - 00954038
+function [img] = rotation(img, A)
+%ROTATION Rotates array 90 degree clockwise based on array dimensions
+
+% % The y dimension of the array
+% rowLength = size(img,1);
+% % The x dimension of the array
+% colLength = size(img,2);
+
+% Transposes the matrix (switches rows and columns)
+img = img';
+
+% Uses fliplr to reverse order of columns for finding rotation
+img = fliplr(img);
+
 end
 
