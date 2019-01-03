@@ -18,14 +18,13 @@ function type = CellCheck(img, prototype)
             img{k} = bwmorph(img{k},'clean',Inf); 
         else
             img{k} = morphology(img{k}); % IMPLEMENT Sarah
-            img{k} = imcomplement(img{k});
+            %img{k} = imcomplement(img{k}); 
         end
 
         if prototype
             a = radon(img{k}, 90); 
             b = radon(img{k}, 0); 
             c = radon(img{k}, 45);
-            %[a, b, c] = Projections(img{k});
         else
             [a, b, c] = Projections(img{k}); % IMPLEMENT Michael
         end

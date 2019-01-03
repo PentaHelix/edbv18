@@ -4,10 +4,18 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     img = im2double(img);
     img = rgb2gray(img);
     
+    %figure, imshow(imbinarize(img,0.55));
+    %figure, imshow(binarization(img, 0.55));
+    %a = imbinarize(img,0.55)-binarization(img, 0.55);
+    %b = binarization(img, 0.55)-imbinarize(img,0.55);
+    %figure, imshow(a);   
+    %figure, imshow(b);  
+    
     if prototype
           img = imbinarize(img,0.55);
     else
-          img = binarization(img, 0.2); % IMPLEMENT Gerhard
+          img = imbinarize(img,0.55);
+          %img = binarization(img, 0.55); % IMPLEMENT Gerhard
     end
         
      
@@ -16,6 +24,7 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
         if prototype
             img = rot90(img, 1);
         else
+            img = rot90(img, 1);
             % IMPLEMENT Gerhard: rotate
         end
     end

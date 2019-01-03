@@ -29,7 +29,7 @@ function [imgs, region] = Crop(img)
     
     %DEBUG-Ausgabe: 
     %for i = 1:length(y)
-    %    rectangle('Position', stats(i).BoundingBox, ...
+    %    rectangle('Position', con(i).BoundingBox, ...
     %    'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
     %end
 end

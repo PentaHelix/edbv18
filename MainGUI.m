@@ -124,10 +124,12 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 %Step-Button
 
 %data=get(handles.pushbutton4,'UserData');
-if get(handles.checkbox1, 'Value')
+
+%if get(handles.checkbox1, 'Value')
     h=guidata(handles.pushbutton4);
     if h.count == 0
-        [raster, img, imgs, region] = Main(handles, getimage(handles.axes1), true, get(handles.checkbox1, 'Value'));
+        set(handles.text1, 'String', 'running...');
+        [raster, img, imgs, region] = Main(handles, getimage(handles.axes1), get(handles.checkbox2, 'Value'), get(handles.checkbox1, 'Value'));
         handles.raster = raster;%[raster, img, imgs, region, count+1];
         handles.img = img;
         handles.imgs = imgs;
@@ -158,8 +160,7 @@ if get(handles.checkbox1, 'Value')
             end
         end 
     end
-end
-
+%end
 
 %figure, imshow(resultImg);
 %set(handles.text1, 'String', result);

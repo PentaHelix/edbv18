@@ -224,6 +224,7 @@ function img = rotate(img, imgs, n, x, y, region, prototype)
     if prototype
         imgs{k} = rot90(imgs{k}, n);
     else
+        imgs{k} = rot90(imgs{k}, n);
         % IMPLEMENT Gerhard
     end
     
