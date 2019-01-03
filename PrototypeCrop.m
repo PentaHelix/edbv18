@@ -6,7 +6,7 @@ function [imgs, region] = PrototypeCrop(img)
     y = find(x < max(x)*0.15 & x > max(x)*0.015);
     stats = stats(y);
     
-    %sort
+    %sort raster cells
     extrema = cat(1, stats.Centroid);
     left = extrema(:, 1);
     left = round(left/100)*100;
@@ -16,6 +16,15 @@ function [imgs, region] = PrototypeCrop(img)
     
     [sorted, sort_order] = sortrows([left right]);
     stats = stats(sort_order);
+    left = left(sort_order);
+    right = right(sort_order);
+    left(1:6) = max(left(1:6));
+    left(7:12) = max(left(7:12));
+    left(13:18) = max(left(13:18));
+    left(19:24) = max(left(19:24));
+    [sorted, sort_order] = sortrows([left right]);
+    
+    stats = stats(sort_order);
 
     
 
@@ -23,7 +32,7 @@ function [imgs, region] = PrototypeCrop(img)
         thisBB = stats(k).BoundingBox;
         imgs{k} = imcrop(img, thisBB);
         region{k} = thisBB;
-    end 
+    end
     
     
     %DEBUG-Ausgabe: 

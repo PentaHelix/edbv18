@@ -43,16 +43,18 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     rasterM = [types{:}];
     try
         rasterM = reshape(rasterM, [6, 4]);
-      
         if ~debug
             [resultImg, result] = GeneratePath(rasterM, img, imgs, region, 0, 0, 0, prototype);
-            figure, imshow(resultImg);
-            set(handles.text1, 'String', result);
+            if strcmp(result,'end') 
+               set(handles.text1, 'String', "Success, correct path found!");
+               figure, imshow(resultImg);
+            elseif strcmp(result,'error')
+               set(handles.text1, 'String', "Error! There is no correct result!");
+            end
+            %set(handles.text1, 'String', result);
         end
     catch ME
-        %causeException = MException('MATLAB:myCode:dimensions','asdf');
-        %ME = addCause(ME,causeException);
-        set(handles.text1, 'String', 'ERROR!');
+        set(handles.text1, 'String', 'Error in Program!');
     end
 end
 

@@ -3,10 +3,10 @@ function type = CellCheck(img, prototype)
     for k=1:length(img)
        
         il = size(img{k});
-        img{k} = img{k}(25:il(1)-25, 25:il(2)-25); 
+        img{k} = img{k}(40:il(1)-40, 40:il(2)-40); 
 
         %Debug-Ausgabe
-        %{ 
+        %{
         figure
         subplot(3, 2, 1)
         imshow(img{k});
@@ -52,7 +52,7 @@ function type = CellCheck(img, prototype)
         subplot(4, 2, 6)
         plot(1:length(b), b)
         
-        %{%
+        %{ %
         d(d==0) = [];
         e(e==0) = [];
         f(f==0) = [];
@@ -87,31 +87,32 @@ function type = CellCheck(img, prototype)
         leftB=0;
         sa = skewness(a);
         sb = skewness(b);
-
-        if  maxB/maxA > 2
-            type{k} = "vline";
-        elseif maxA/maxB > 2
-            type{k} = "hline";
-        elseif sa > 0 && sb > 0
-            leftA = sum(a(1:indexA-20));
-            rightA = sum(a(indexA+20:length(a)));
-            leftB = sum(b(1:indexB-20));
-            rightB = sum(b(indexB+20:length(b))); 
-            if leftA < rightA
-               if leftB < rightB
-                   type{k}="cornerLU";
-               else
-                   type{k}="cornerRU";
-               end
-            else
-               if leftB < rightB
-                   type{k}="cornerLO";
-               else
-                   type{k}="cornerRO";
-               end
+        if maxA > 10 && maxB > 10 && maxC >10 
+            if  maxB/maxA > 2
+                type{k} = "vline";
+            elseif maxA/maxB > 2
+                type{k} = "hline";
+            elseif sa > 0 && sb > 0
+                leftA = sum(a(1:indexA-20));
+                rightA = sum(a(indexA+20:length(a)));
+                leftB = sum(b(1:indexB-20));
+                rightB = sum(b(indexB+20:length(b))); 
+                if leftA < rightA
+                   if leftB < rightB
+                       type{k}="cornerLU";
+                   else
+                       type{k}="cornerRU";
+                   end
+                else
+                   if leftB < rightB
+                       type{k}="cornerLO";
+                   else
+                       type{k}="cornerRO";
+                   end
+                end
+            elseif sa < 0 && sb < 0
+                type{k} = "point";
             end
-        elseif sa < 0 && sb < 0
-            type{k} = "point";
         end
         
         %Debug-Ausgabe

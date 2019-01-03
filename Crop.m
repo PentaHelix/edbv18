@@ -15,6 +15,15 @@ function [imgs, region] = Crop(img)
     right = round(right/100)*100;
 
     
+    
+    [~, sort_order] = sortrows([left right]);
+    con = con(sort_order);
+    left = left(sort_order);
+    right= right(sort_order);
+    left(1:6) = max(left(1:6));
+    left(7:12) = max(left(7:12));
+    left(13:18) = max(left(13:18));
+    left(19:24) = max(left(19:24));
     [~, sort_order] = sortrows([left right]);
     con = con(sort_order);
 

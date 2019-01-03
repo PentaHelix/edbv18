@@ -6,11 +6,11 @@ function [v ,  h,  d]=Projections(img)
     %{
     figure
     subplot(2, 2, 1)
-    plot (1:length(v), v1, 'r-');
+    plot (1:length(v), v, 'r-');
     subplot(2, 2, 2)
-    plot (1:length(h), h1, 'r-');
+    plot (1:length(h), h, 'r-');
     subplot(2, 2, 3)
-    plot (1:length(d), d1, 'r-');
+    plot (1:length(d), d, 'r-');
     %}
     
 end
@@ -38,7 +38,9 @@ function [dsum] = diagSum(img)
     dsum(1:rows) = flip(dsum(1:rows));
     for i=1:cols
         for j=i:cols
-            if j-i+1 < rows
+            if j < rows
+                %clc;
+                %[i+rows, j, j-i+1, size(dsum), size(img)]
                 dsum(i+rows) = dsum(i+rows) + img(j, j-i+1);
             end
         end

@@ -93,7 +93,7 @@ handles.data=0;
 handles.ret=0;
 handles.count =0;
 guidata(handles.pushbutton4,handles);
-set(handles.text1, 'String', '...');
+set(handles.text1, 'String', 'press Step/Start...');
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
@@ -102,9 +102,11 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if get(handles.checkbox1, 'Value');
     set(handles.text1, 'String', 'running...');
+    pause(0.01);
     Main(handles, getimage(handles.axes1), false, true);
 else
     set(handles.text1, 'String', 'running...');
+    pause(0.01);
     Main(handles, getimage(handles.axes1), false, false);
 end
 
@@ -125,19 +127,27 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 
 %data=get(handles.pushbutton4,'UserData');
 
-%if get(handles.checkbox1, 'Value')
+if get(handles.checkbox2, 'Value')
     h=guidata(handles.pushbutton4);
     if h.count == 0
-        set(handles.text1, 'String', 'running...');
+        set(handles.text1, 'String', 'starting...');
+        pause(0.01);
         [raster, img, imgs, region] = Main(handles, getimage(handles.axes1), get(handles.checkbox2, 'Value'), get(handles.checkbox1, 'Value'));
+        set(handles.text1, 'String', 'running...press step');
+        
+        [img, ret, data] = GeneratePath(raster, img, imgs, region, h.count+1, h.data, h.ret, get(handles.checkbox1, 'Value'));
+        handles.data = data;
+        handles.ret=ret;
+        
         handles.raster = raster;%[raster, img, imgs, region, count+1];
         handles.img = img;
         handles.imgs = imgs;
         handles.region = region;
         handles.count = h.count+1;
         guidata(handles.pushbutton4,handles);
-        rectangle('Position', region{1}, ...
-            'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
+        
+        str = sprintf('Before rotation: %s \n\nAfter rotation: %s', "", "");
+            set(handles.text2, 'String', str);
     else 
         if h.count <= 24 && ~strcmp(h.ret,'end') && ~strcmp(h.ret,'error')
             if h.count > 1
@@ -154,13 +164,17 @@ function pushbutton4_Callback(hObject, eventdata, handles)
             handles.ret=ret;
             handles.count = h.count+1;
             guidata(handles.pushbutton4,handles);
-            set(handles.text2, 'String', h.raster(k));
-            if strcmp(ret,'end') || strcmp(ret,'error')
-               set(handles.text1, 'String', h.ret);
+            str = sprintf('Before rotation: %s \n\nAfter rotation: %s', h.raster(k), ret);
+            set(handles.text2, 'String', str);
+            %set(handles.text2, 'String', strcat("Before rotation: ", h.raster(k), "After rotation: ", ret));
+            if strcmp(ret,'end') 
+               set(handles.text1, 'String', "Success, correct path found!");
+            elseif strcmp(ret,'error')
+               set(handles.text1, 'String', "Error! There is no correct result!");
             end
         end 
     end
-%end
+end
 
 %figure, imshow(resultImg);
 %set(handles.text1, 'String', result);
