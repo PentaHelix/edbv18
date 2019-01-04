@@ -66,6 +66,7 @@ end
 
 %Author: Yana & Jakob
 function [stats] = components(Image)
+    Image = logical(Image(:,:,1)); 
     stats = [];
     [M, N]=size(Image);
     Connected = zeros(M,N);
@@ -86,6 +87,7 @@ function [stats] = components(Image)
                       Neighbors = bsxfun(@plus, Index, Offsets');
                       Neighbors = unique(Neighbors(:));
                       Neighbors = Neighbors(Neighbors > 0 & Neighbors < M * N);
+
                       Index = Neighbors(Image(Neighbors));
                       Connected(Index)=Mark;
                       

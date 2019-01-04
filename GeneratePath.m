@@ -261,8 +261,7 @@ function img = rotate(img, imgs, n, x, y, region, prototype)
     if prototype
         imgs{k} = rot90(imgs{k}, n);
     else
-        imgs{k} = rot90(imgs{k}, n);
-        % IMPLEMENT Gerhard
+        imgs{k} = rotation(imgs{k}, n); % IMPLEMENT Gerhard
     end
     
     img(uint16(thisBB(2):thisBB(2)+a-1) , uint16(thisBB(1):thisBB(1)+a-1)) = imgs{k};

@@ -133,21 +133,29 @@ if get(handles.checkbox2, 'Value')
         set(handles.text1, 'String', 'starting...');
         pause(0.01);
         [raster, img, imgs, region] = Main(handles, getimage(handles.axes1), get(handles.checkbox2, 'Value'), get(handles.checkbox1, 'Value'));
-        set(handles.text1, 'String', 'running...press step');
-        
-        [img, ret, data] = GeneratePath(raster, img, imgs, region, h.count+1, h.data, h.ret, get(handles.checkbox1, 'Value'));
-        handles.data = data;
-        handles.ret=ret;
-        
-        handles.raster = raster;%[raster, img, imgs, region, count+1];
-        handles.img = img;
-        handles.imgs = imgs;
-        handles.region = region;
-        handles.count = h.count+1;
-        guidata(handles.pushbutton4,handles);
-        
-        str = sprintf('Before rotation: %s \n\nAfter rotation: %s', "", "");
-            set(handles.text2, 'String', str);
+        if ~strcmp(get(handles.text1, 'String'), "starting...") %if error
+            %set(handles.pushbutton4,'Enable','off');
+            handles.count = 25;
+            guidata(handles.pushbutton4,handles);
+        else
+            set(handles.text1, 'String', 'running...press step');
+
+            [img, ret, data] = GeneratePath(raster, img, imgs, region, h.count+1, h.data, h.ret, get(handles.checkbox1, 'Value'));
+            handles.data = data;
+            handles.ret=ret;
+
+            handles.raster = raster;%[raster, img, imgs, region, count+1];
+            handles.img = img;
+            handles.imgs = imgs;
+            handles.region = region;
+            handles.count = h.count+1;
+            guidata(handles.pushbutton4,handles);
+            if strcmp(ret,'error')
+               set(handles.text1, 'String', "Error! There is no correct result!");
+            end
+            str = sprintf('Before rotation: %s \n\nAfter rotation: %s', "", "");
+                set(handles.text2, 'String', str);
+        end
     else 
         if h.count <= 24 && ~strcmp(h.ret,'end') && ~strcmp(h.ret,'error')
             if h.count > 1

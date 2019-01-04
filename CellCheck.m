@@ -3,7 +3,7 @@ function type = CellCheck(img, prototype)
     for k=1:length(img)
        
         il = size(img{k});
-        img{k} = img{k}(40:il(1)-40, 40:il(2)-40); 
+        img{k} = img{k}(50:il(1)-50, 50:il(2)-50); 
 
         %Debug-Ausgabe
         %{
@@ -87,7 +87,7 @@ function type = CellCheck(img, prototype)
         leftB=0;
         sa = skewness(a);
         sb = skewness(b);
-        if maxA > 10 && maxB > 10 && maxC >10 
+        if maxA > 30 || maxB > 30 || maxC > 30 
             if  maxB/maxA > 2
                 type{k} = "vline";
             elseif maxA/maxB > 2
@@ -117,7 +117,7 @@ function type = CellCheck(img, prototype)
         
         %Debug-Ausgabe
         %{ 
-        clc;
+        %clc;
         %maxA
         %maxB
         %maxC

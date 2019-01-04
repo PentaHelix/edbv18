@@ -6,12 +6,13 @@ function [img] = rotation(img, A)
 % rowLength = size(img,1);
 % % The x dimension of the array
 % colLength = size(img,2);
+A = 4-A;
+for i = 1:A
+    % Transposes the matrix (switches rows and columns)
+    img = img';
 
-% Transposes the matrix (switches rows and columns)
-img = img';
-
-% Uses fliplr to reverse order of columns for finding rotation
-img = fliplr(img);
-
+    % Uses fliplr to reverse order of columns for finding rotation
+    img = fliplr(img);
+end 
 end
 
