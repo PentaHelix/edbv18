@@ -11,9 +11,10 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
     else
           img = imbinarize(img,val);
           % IMPLEMENT Gerhard
-          % img = binarization(img, 0.55); 
+          img = binarization(img, 0.55); 
     end
         
+    imshow(img,'Parent',handles.axes1);
      
     s = size(img);
     if s(1) < s(2)
@@ -21,7 +22,8 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
             img = rot90(img, 1);
         else
             % IMPLEMENT Gerhard:
-            img = rotation(img, 1);
+            test = [1 2 3; 4 5 6;];
+            img = rotation(test, 1);
         end
     end
     
