@@ -55,7 +55,7 @@ function [imgs, region] = Crop(img, prototype)
     %end
 end
 
-%Author: Yana & Jakob
+%Author: Yana
 function [stats] = myImcrop(img, scope)
     x = scope(1);
     y = scope(2);
@@ -64,38 +64,38 @@ function [stats] = myImcrop(img, scope)
     stats = img(y:y+height-1, x:x+width-1);
 end
 
-%Author: Yana & Jakob
+%Author: Jakob
 function [stats] = components(Image)
-    Image = logical(Image(:,:,1)); 
+    Image = logical(Image(:,:,1));
     stats = [];
-    [M, N]=size(Image);
-    Connected = zeros(M,N);
-    Mark = 1;
-    Offsets = [-1; M; 1; -M];
+    [w, h]=size(Image);
+    comps = zeros(w,h);
+    counter = 1;
 
-    for i = 1:M
-        for j = 1:N
-            if(Image(i,j)==1)
-                 Index = ((j-1)*M + i);
-                 Connected(Index)=Mark;
-                 bb.x0 = N;
-                 bb.y0 = M;
+    for i = 1:w
+        for j = 1:h
+            if(Image(i,j) == 1)
+                 idx = ((j-1)*w + i);
+                 comps(idx) = counter;
+                 bb.x0 = h;
+                 bb.y0 = w;
                  bb.x1 = 0;
                  bb.y1 = 0;
-                 while ~isempty(Index)
-                      Image(Index)=0;
-                      Neighbors = bsxfun(@plus, Index, Offsets');
-                      Neighbors = unique(Neighbors(:));
-                      Neighbors = Neighbors(Neighbors > 0 & Neighbors < M * N);
+                 while ~isempty(idx)
+                      Image(idx)=0;
+                      
+                      neighbors = idx + [-1; w; 1; -w]';
+                      neighbors = neighbors(neighbors > 0 & neighbors < w * h);
+                      neighbors = unique(neighbors(:));
 
-                      Index = Neighbors(Image(Neighbors));
-                      Connected(Index)=Mark;
+                      idx = neighbors(Image(neighbors));
+                      comps(idx)=counter;
                       
-                      minY = min(mod(Index, M));
-                      minX = min(floor(Index / M));
+                      minY = min(mod(idx, w));
+                      minX = min(floor(idx / w));
                       
-                      maxY = max(mod(Index, M));
-                      maxX = max(floor(Index / M));
+                      maxY = max(mod(idx, w));
+                      maxX = max(floor(idx / w));
                       
                       if (minX < bb.x0) bb.x0 = minX; end
                       if (minY < bb.y0) bb.y0 = minY; end
@@ -104,14 +104,14 @@ function [stats] = components(Image)
                       
                  end
                  
-                 stats(Mark).Index = Mark;
-                 stats(Mark).BoundingBox = [bb.x0, bb.y0, bb.x1 - bb.x0, bb.y1 - bb.y0];
-                 stats(Mark).Area = (bb.x1 - bb.x0) * (bb.y1 - bb.y0);
+                 stats(counter).Index = counter;
+                 stats(counter).BoundingBox = [bb.x0, bb.y0, bb.x1 - bb.x0, bb.y1 - bb.y0];
+                 stats(counter).Area = (bb.x1 - bb.x0) * (bb.y1 - bb.y0);
                  
-                 pixels = find(Connected == Mark);
+                 pixels = find(comps == counter);
                  
-                 stats(Mark).Centroid = floor([mean(floor(pixels / N)), mean(mod(pixels, M))]);
-                 Mark = Mark + 1;
+                 stats(counter).Centroid = floor([mean(floor(pixels / h)), mean(mod(pixels, w))]);
+                 counter = counter + 1;
             end
         end
     end
