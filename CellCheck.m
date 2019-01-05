@@ -1,9 +1,10 @@
 %Author: Michael Raimer - 11701255
 function type = CellCheck(img, prototype)
+    % recognize all shapes
     for k=1:length(img)
        
         il = size(img{k});
-        img{k} = img{k}(50:il(1)-50, 50:il(2)-50); 
+        img{k} = img{k}(50:il(1)-50, 50:il(2)-50); %cut of borders
 
         %Debug-Ausgabe
         %{
@@ -12,6 +13,7 @@ function type = CellCheck(img, prototype)
         imshow(img{k});
         %}
 
+        % perform morphological operations on image
         if prototype
             img{k} = imcomplement(img{k});
             img{k} = bwmorph(img{k},'fill',Inf);
@@ -21,6 +23,7 @@ function type = CellCheck(img, prototype)
             %img{k} = imcomplement(img{k}); 
         end
 
+        % calculate projections of image
         if prototype
             a = radon(img{k}, 90); 
             b = radon(img{k}, 0); 
@@ -29,6 +32,7 @@ function type = CellCheck(img, prototype)
             [a, b, c] = Projections(img{k}); % IMPLEMENT Michael
         end
         
+        % remove 0's from projection
         a(a==0) = [];
         b(b==0) = [];
         c(c==0) = [];
@@ -85,32 +89,34 @@ function type = CellCheck(img, prototype)
         rightA=0;
         rightB=0;
         leftB=0;
+        
         sa = skewness(a);
         sb = skewness(b);
-        if maxA > 30 || maxB > 30 || maxC > 30 
-            if  maxB/maxA > 2
+        
+        if maxA > 30 || maxB > 30 || maxC > 30 %check if cell is relevant
+            if  maxB/maxA > 2 %vline
                 type{k} = "vline";
-            elseif maxA/maxB > 2
+            elseif maxA/maxB > 2 %hline
                 type{k} = "hline";
-            elseif sa > 0 && sb > 0
+            elseif sa > 0 && sb > 0 %corner
                 leftA = sum(a(1:indexA-20));
                 rightA = sum(a(indexA+20:length(a)));
                 leftB = sum(b(1:indexB-20));
                 rightB = sum(b(indexB+20:length(b))); 
                 if leftA < rightA
-                   if leftB < rightB
+                   if leftB < rightB %cornerLU
                        type{k}="cornerLU";
-                   else
+                   else %cornerRU
                        type{k}="cornerRU";
                    end
                 else
-                   if leftB < rightB
+                   if leftB < rightB %cornerLO
                        type{k}="cornerLO";
-                   else
+                   else %cornerRO
                        type{k}="cornerRO";
                    end
                 end
-            elseif sa < 0 && sb < 0
+            elseif sa < 0 && sb < 0 %point
                 type{k} = "point";
             end
         end

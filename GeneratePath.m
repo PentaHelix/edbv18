@@ -2,40 +2,41 @@
 function [img, ret, data] = GeneratePath(raster, img, imgs, region, count, data, ret, prototype)
     if count==0 %Normal-Mode:
         ret = "ok";
-        [x,y] = findPoint(raster);
+        [x,y] = findPoint(raster); %find start point
         oldX = x;
         oldY = y;
-        while ~strcmp(ret,"error") && ~strcmp(ret, "end")
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
+        while ~strcmp(ret,"error") && ~strcmp(ret, "end") %solange durchlaufen bis ein error auftritt, oder das ende erreicht wird
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype); %calculate how to rotate shape
             oldX = x;
             oldY = y;
             x = nextX;
             y = nextY;
         end 
     else %Debug-Mode:
-        if count == 1 %Erster Durchlauf
-            [x,y] = findPoint(raster);
+        if count == 1 %Erster Durchlauf im Debug-Mode
+            [x,y] = findPoint(raster); %find start point
             oldX = x;
             oldY = y;
             k=6*(x-1)+y;
             rectangle('Position', region{k}, ...
-                'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
+                'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--'); %aktuelle zelle markieren
             ret = "ok";
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype);
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, x, y, oldX, oldY, ret, prototype); %calculate how to rotate shape
             x = nextX;
             y = nextY;
             data = [oldX oldY x y];
-        else
-            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret, prototype);
+        else %restlichen Durchläufe im Debug-mode
+            [img, ret, nextX, nextY] = calculate(raster, img, imgs, region, data(3), data(4), data(1), data(2), ret, prototype); %calculate how to rotate shape
             x = nextX;
             y = nextY;
-            data = [data(3) data(4) x y];
+            data = [data(3) data(4) x y]; %return data
         end
     end
 end
 
 %Author: Michael Raimer - 11701255
 function [x,y] = findPoint(raster)
+    % search start point
     x = 0; y = 0;
     for y=1:6
         for x=1:4
@@ -248,9 +249,12 @@ end
 
 %Author: Michael Raimer - 11701255
 function img = rotate(img, imgs, n, x, y, region, prototype)
-    k = 6*(x-1)+y;
+    %rotate the image
+    
+    k = 6*(x-1)+y; %calc index
     thisBB = region{k};
     s = size(imgs{k});
+    
     if s(1) < s(2)
        a = s(1);
     else
@@ -258,6 +262,7 @@ function img = rotate(img, imgs, n, x, y, region, prototype)
     end
     imgs{k} = imgs{k}(1:a, 1:a);
     
+    %rotate 
     if prototype
         imgs{k} = rot90(imgs{k}, n);
     else
@@ -269,30 +274,31 @@ end
 
 %Author: Michael Raimer - 11701255
 function [x, y, dir] = getNextCell(raster, oldX, oldY, x, y)
+    %find next cell with shape in it
     dir = "nothing";
-    if y < length(raster(:,1))
-        if(raster(y+1, x) ~= "nothing" && (y+1 ~= oldY || x ~= oldX))
+    if y < length(raster(:,1)) %y innerhalb des rasters
+        if(raster(y+1, x) ~= "nothing" && (y+1 ~= oldY || x ~= oldX)) %darunter überprüfen
             y = y+1;
             dir = "down";
             return;
         end
     end
-    if x < length(raster(1,:))
-        if(raster(y, x+1) ~= "nothing" && (y ~= oldY || x+1 ~= oldX))
+    if x < length(raster(1,:)) %x innerhalb des rasters
+        if(raster(y, x+1) ~= "nothing" && (y ~= oldY || x+1 ~= oldX)) %rechts überprüfen
             x = x+1;
             dir = "right";
             return;
         end
     end
-    if y > 1  
-        if(raster(y-1, x) ~= "nothing" && (y-1 ~= oldY || x ~= oldX))
+    if y > 1  % y innerhalb des raster
+        if(raster(y-1, x) ~= "nothing" && (y-1 ~= oldY || x ~= oldX)) %darüber überprüfen
             y = y-1;
             dir = "up";
             return;
         end
     end
-    if x > 1
-        if(raster(y, x-1) ~= "nothing" && (y ~= oldY || x-1 ~= oldX))
+    if x > 1 % x innerhalb des rasters
+        if(raster(y, x-1) ~= "nothing" && (y ~= oldY || x-1 ~= oldX)) %links überprüfen
             x = x-1;
             dir = "left";
             return;
