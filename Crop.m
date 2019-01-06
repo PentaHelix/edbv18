@@ -56,6 +56,7 @@ function [imgs, region] = Crop(img, prototype)
 end
 
 %Author: Yana
+%This function crops an image img by a cropping rectangle scope. 
 function [stats] = myImcrop(img, scope)
     x = scope(1);
     y = scope(2);
