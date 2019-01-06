@@ -3,7 +3,7 @@ function [img] = rotation(img, A)
 %ROTATION Rotates array 90 degree clockwise based on array dimensions
 A = 4-A;
 for i=1:A
-    % Transposes the matrix (switches rows and columns)
+    % TRANSPOSE the matrix (switches rows and columns)
     img = img';
 
     % % The y dimension of the array
@@ -11,9 +11,7 @@ for i=1:A
     % % The x dimension of the array
     colLength = size(img,2);
 
-    % Uses fliplr to reverse order of columns for finding rotation
-    % img = fliplr(img);
-
+    % REVERSE order of columns for finding rotation
     % For every row
     for y = 1:rowLength
         % Swap elements until you reach mid row element (rounded down)

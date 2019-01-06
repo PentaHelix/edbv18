@@ -9,7 +9,6 @@ img_overThreshold = logical(img(:,:,1) >= threshold);
 binImg = img;
 binImg(img_overThreshold) = 1;
 binImg(not(img_overThreshold)) = 0;
-%%
 
 end
 
