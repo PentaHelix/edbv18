@@ -1,8 +1,10 @@
 %Author: Gerhard Andreas Stog - 00954038
-function [img] = rotation(img, A)
+function [img] = rotation(img, numberOfRotations)
 %ROTATION Rotates array 90 degree clockwise based on array dimensions
-A = 4-A;
-for i=1:A
+
+numberOfRotations = 4-numberOfRotations;
+
+for i=1:numberOfRotations
     % TRANSPOSE the matrix (switches rows and columns)
     img = img';
 

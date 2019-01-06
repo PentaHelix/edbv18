@@ -42,7 +42,7 @@ function [rasterM, img, imgs, region] = Main(handles, img, debug, prototype)
         if prototype
             img = rot90(img, 1);
         else
-            img = rotation(img, 1); % IMPLEMENT Gerhard
+            img = rotation(img, 1);
         end
     end
     
